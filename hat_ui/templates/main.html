@@ -1,0 +1,124 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block head_js %}
+<script type="text/javascript" language="javascript" src="{% static 'jsme/jsme.nocache.js' %}"></script>
+<script>
+
+    // This function is called after JSME code is loaded.
+    function jsmeOnLoad() {
+
+        // If no radical in session storage, set to the cumyloxy radical example
+        if (!sessionStorage.getItem('smiles_A')) {
+            sessionStorage.setItem('smiles_A', 'CC(C)([O-])c1ccccc1');
+            sessionStorage.setItem('jsme_molecule_A', '10 10 C 2.42 0.70 C 2.42 2.10 C 1.21 2.80 C 0.00 2.10 C 0.00 0.70 C 1.21 0.00 C 3.64 2.80 C 4.85 2.10 C 3.64 4.20 O- 4.85 3.50 1 2 1 2 3 2 3 4 1 4 5 2 5 6 1 6 1 2 2 7 1 7 8 1 7 9 1 7 10 1');
+        }
+
+        // If no molecule in session storage, set to 2-methylpentane example
+        if (!sessionStorage.getItem('smiles_B')) {
+            sessionStorage.setItem('smiles_B', 'CCCC(C)C');
+            sessionStorage.setItem('jsme_molecule_B', '6 5 C 0.00 0.00 C 1.21 0.70 C 2.42 0.00 C 3.64 0.70 C 4.85 0.00 C 1.21 2.10 1 2 1 2 3 1 3 4 1 4 5 1 2 6 1');
+        }
+
+        // Generate JSME editor and SMILES input for radical
+        document.JSME_editor_A = new JSApplet.JSME("jsme_editor_A", "450px", "450px", {
+            "options": "oldlook,marker,markAtomOnly",
+            "jme": sessionStorage.getItem('jsme_molecule_A'),
+        });
+
+        document.getElementById('smilesA').value = sessionStorage.getItem('smiles_A');
+
+        // Generate JSME editor and SMILES input for molecule
+        document.JSME_editor_B = new JSApplet.JSME("jsme_editor_B", "450px", "450px", {
+            "options": "oldlook,marker,markAtomOnly",
+            "jme": sessionStorage.getItem('jsme_molecule_B'),
+        });
+
+        document.getElementById('smilesB').value = sessionStorage.getItem('smiles_B');
+        
+        // Edit SMILES inputs whenever JSME structures are modified
+        document.JSME_editor_A.setCallBack("AfterStructureModified", function(event){
+            document.getElementById('smilesA').value = event.src.smiles();
+        });
+
+        document.JSME_editor_A.setCallBack("AtomClicked", function(event){
+            document.getElementById('smilesA').value = event.src.smiles();
+        });
+
+        document.JSME_editor_A.setCallBack("BondClicked", function(event){
+            document.getElementById('smilesA').value = event.src.smiles();
+        });
+
+        document.JSME_editor_B.setCallBack("AfterStructureModified", function(event){
+            document.getElementById('smilesB').value = event.src.smiles();
+        });
+
+        document.JSME_editor_B.setCallBack("AtomClicked", function(event){
+            document.getElementById('smilesB').value = event.src.smiles();
+        });
+
+        document.JSME_editor_B.setCallBack("BondClicked", function(event){
+            document.getElementById('smilesB').value = event.src.smiles();
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // When predict button is clicked...
+        document.getElementById('predict').onclick = function() {
+            // Save JSME structures and SMILES inputs to session storage
+            sessionStorage.setItem('jsme_molecule_A', document.JSME_editor_A.jmeFile());
+            sessionStorage.setItem('jsme_molecule_B', document.JSME_editor_B.jmeFile());
+            sessionStorage.setItem('smiles_A', document.getElementById('smilesA').value);
+            sessionStorage.setItem('smiles_B', document.getElementById('smilesB').value);
+
+            // Update status message
+            document.getElementById('status').innerHTML='Predicting... for larger molecules, your query may take up to a minute or two.'
+        }
+    });
+
+</script>  
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <h1>HATPredict: Hydrogen Atom Transfer Product Predictor</h1>
+
+    <h2 class="text-center my-4">A·&nbsp;&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;B–H&nbsp;&nbsp;&nbsp;→&nbsp;&nbsp;&nbsp;A–H&nbsp;&nbsp;&nbsp;+&nbsp;&nbsp;&nbsp;B·</h2>
+
+    <p>This machine learning tool predicts the <strong>relative quantities</strong> of the products formed in <strong>hydrogen atom transfer (HAT)</strong> reactions of the general form shown above.  It also outputs the <strong>free energy barrier (∆G<sup>‡</sup>)</strong> for the formation of each product.</sup></p>
+
+    <p>To become familiar with the tool, simply run the pre-drawn example below!  To try your own HAT reactions, just edit the molecules!  Larger molecules (about 15-20 heavy atoms) may take <strong>up to a minute or two</strong>.</p>
+
+    <p>To learn more about how the tool works, or the problem the tool is solving, check out the <a href="/about/">about</a> page.  For the source code and model training, head to the <a href="https://github.com/jacosand/hat-predict">github</a> repository.</p>
+
+    <form action="{% url 'index' %}" method="get">
+
+    <div class="row mt-4 mb-2 px-2">
+
+        <div class="col">
+            <h3 class="text-center">Draw the starting radical: A·</h3>
+            <h5 class="text-center mb-3">Use a negative charge (anion) where you want the radical to be.</h5>
+            <div class="d-flex justify-content-center" id="jsme_editor_A"></div>
+            <h5 class="text-center m-3">SMILES: <input type="text" style="width: 370px;" name="smilesA" id="smilesA"></h5>
+        </div>
+
+        <div class="col">
+            <h3 class="text-center">Draw the starting molecule: B–H</h3>
+            <h5 class="text-center mb-3">&nbsp;</h5>
+            <div class="d-flex justify-content-center" id="jsme_editor_B"></div>
+            <h5 class="text-center m-3">SMILES: <input type="text" style="width: 370px;" name="smilesB" id="smilesB"></h5>
+        </div>
+
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <input type="submit" id="predict" class="btn btn-primary btn-lg" value="Predict!">
+    </div>
+    <h5 class="text-center m-3" id="status"></h5>
+
+    </form>
+
+    {{ html_output |safe }}
+</div>
+{% endblock %}

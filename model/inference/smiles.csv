@@ -1,0 +1,6 @@
+reaction,DGdd_true,AR_smiles,AR_atom,AH_smiles,AH_atom,BR_smiles,BR_atom,BH_smiles,BH_atom
+0,0,CC(C)([O])c1ccccc1,3,CC(C)(O)c1ccccc1,3,[CH2]CCC(C)C,0,CCCC(C)C,0
+1,0,CC(C)([O])c1ccccc1,3,CC(C)(O)c1ccccc1,3,C[CH]CC(C)C,1,CCCC(C)C,1
+2,0,CC(C)([O])c1ccccc1,3,CC(C)(O)c1ccccc1,3,CC[CH]C(C)C,2,CCCC(C)C,2
+3,0,CC(C)([O])c1ccccc1,3,CC(C)(O)c1ccccc1,3,CCC[C](C)C,3,CCCC(C)C,3
+4,0,CC(C)([O])c1ccccc1,3,CC(C)(O)c1ccccc1,3,[CH2]C(C)CCC,0,CCCC(C)C,4

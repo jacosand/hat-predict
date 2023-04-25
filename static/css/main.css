@@ -1,0 +1,39 @@
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 16pt;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 1.25rem;
+}
+
+p {
+    margin-bottom: 2rem;
+}
+
+h2 {
+    margin-top: 2rem;
+}
+
+a {
+    text-decoration: none;
+    color: #0d6efd;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+nav {
+    font-family: "Menlo", monospace;
+}
+
+.navbar .navbar-nav .nav-item .nav-link {
+    padding: 0 1em;
+    color: #cfe2ff;
+}
+
+.navbar .navbar-nav .nav-item:not(:last-child) .nav-link {
+    border-right: 2px solid #cfe2ff;
+}
